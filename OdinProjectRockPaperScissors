@@ -1,0 +1,40 @@
+function getComputerChoice() {
+    let a = Math.random() * 3;
+    let choice;
+
+    if (a < 1) {
+        choice = "ROCK";
+    } else if (a < 2) {
+        choice = "PAPER";
+    } else {
+        choice = "SCISSORS";
+    }
+
+    console.log("Computer chose:", choice);
+    return choice;
+}
+
+function getUserChoice() {
+    let human_choice = prompt("Enter your choice (ROCK, PAPER, or SCISSORS): ");
+    return human_choice;
+}
+
+function decideWinner(computerChoice, humanChoice) {
+    if (computerChoice === humanChoice) {
+        console.log("It's a tie!");
+    } else if (computerChoice === "ROCK" && humanChoice === "PAPER") {
+        console.log("You win!");
+    } else if (computerChoice === "PAPER" && humanChoice === "SCISSORS") {
+        console.log("You win!");
+    } else if (computerChoice === "SCISSORS" && humanChoice === "ROCK") {
+        console.log("You win!");
+    } else {
+        console.log("Computer wins!");
+    }
+}
+
+let humanChoice = getUserChoice();
+
+let computerChoice = getComputerChoice();
+
+decideWinner(computerChoice, humanChoice);
