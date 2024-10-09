@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Vishal Joshy">
+    <title>Rock Paper Scissors</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>Rock, Paper, and Scissors</header>
+    <button onclick="playGame('ROCK')">ROCK</button>
+    <img src="rock.png" alt="rock image" class="button-image">
+    <button onclick="playGame('PAPER')">PAPER</button>
+    <img src="paper.png" alt="paper image" class="button-image">
+    <button onclick="playGame('SCISSORS')">SCISSORS</button>
+    <img src="scissor.png" alt="scissor image" class="button-image">
+    <p id="gameResult"></p>
+    <p id="computerChoice"></p>
+
+    <script>
+        function playGame(humanChoice) {
+            // Randomly select computer's choice
+            let a = Math.random() * 3;
+            let computerChoice;
+
+            if (a < 1) {
+                computerChoice = "ROCK";
+            } else if (a < 2) {
+                computerChoice = "PAPER";
+            } else {
+                computerChoice = "SCISSORS";
+            }
+
+            // Display what the computer chose
+            document.getElementById("computerChoice").textContent = "Computer chose: " + computerChoice;
+
+            decideWinner(computerChoice, humanChoice);
+        }
+
+        function decideWinner(computerChoice, humanChoice) {
+            if (computerChoice === humanChoice) {
+                document.getElementById("gameResult").textContent = "IT'S A TIE!";
+            } else if (
+                (computerChoice === "ROCK" && humanChoice === "PAPER") ||
+                (computerChoice === "PAPER" && humanChoice === "SCISSORS") ||
+                (computerChoice === "SCISSORS" && humanChoice === "ROCK")
+            ) {
+                document.getElementById("gameResult").textContent = "YOU WIN!";
+            } else {
+                document.getElementById("gameResult").textContent = "COMPUTER WINS :(";
+            }
+        }
+    </script>
+</body>
+</html>
