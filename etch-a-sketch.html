@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Vishal Joshy">
+    <title>Etch-A-Sketch</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <button id="resetButton">Reset</button>
+    <header>Etch-A-Sketch</header>
+    <div id="Etch-A-Sketch" class="board">
+        <div id="drawing-board" class="canvas"></div>
+        
+        <div id="knob-left" class="knob-left">
+            <div class="knob-inner"></div>
+        </div>
+        
+        <div id="knob-right" class="knob-right">
+            <div class="knob-inner"></div>
+        </div>
+    </div>
+
+    <script>
+const drawingBoard = document.getElementById('drawing-board');
+
+const gridSize = 80; // Reduced from 50 to make cells larger and fit the canvas
+const cellSize = Math.floor(drawingBoard.clientWidth / gridSize);
+
+for (let i = 0; i < gridSize * gridSize; i++) {
+    const cell = document.createElement('div');
+    cell.classList.add('cell');
+    cell.style.width = `${cellSize}px`;
+    cell.style.height = `${cellSize}px`;
+    drawingBoard.appendChild(cell);
+}
+
+let currentX = Math.floor(gridSize / 2);
+let currentY = Math.floor(gridSize / 2);
+
+let isDrawing = false;
+
+let leftKnobRotation = 0;
+let rightKnobRotation = 0;
+
+const leftKnob = document.getElementById('knob-left');
+const rightKnob = document.getElementById('knob-right');
+
+const keys = {
+    ArrowUp: false,
+    ArrowDown: false,
+    ArrowLeft: false,
+    ArrowRight: false
+};
+
+document.addEventListener('keydown', handleKeyDown);
+document.addEventListener('keyup', handleKeyUp);
+
+function handleKeyDown(e) {
+    if (e.key in keys) {
+        keys[e.key] = true;
+        e.preventDefault(); 
+    }
+}
+
+function handleKeyUp(e) {
+    if (e.key in keys) {
+        keys[e.key] = false;
+    }
+}
+
+// Main game loop
+function gameLoop() {
+    if (keys.ArrowUp) moveUp();
+    if (keys.ArrowDown) moveDown();
+    if (keys.ArrowLeft) moveLeft();
+    if (keys.ArrowRight) moveRight();
+
+    draw();
+    rotateKnobs();
+
+    requestAnimationFrame(gameLoop);
+}
+
+function moveUp() {
+    if (currentY > 0) currentY--;
+    rightKnobRotation += 5;
+}
+
+function moveDown() {
+    if (currentY < gridSize - 1) currentY++;
+    rightKnobRotation -= 5;
+}
+
+function moveLeft() {
+    if (currentX > 0) currentX--;
+    leftKnobRotation += 5;
+}
+
+function moveRight() {
+    if (currentX < gridSize - 1) currentX++;
+    leftKnobRotation -= 5;
+}
+
+function draw() {
+    const index = currentY * gridSize + currentX;
+    const cell = drawingBoard.children[index];
+    if (cell) {
+        cell.style.backgroundColor = 'black';
+    }
+}
+
+function rotateKnobs() {
+    leftKnob.style.transform = `rotate(${leftKnobRotation}deg)`;
+    rightKnob.style.transform = `rotate(${rightKnobRotation}deg)`;
+}
+
+function init() {
+    draw();
+    gameLoop();
+}
+
+window.onload = init;
+
+window.addEventListener('devicemotion', handleShake);
+
+let lastUpdate = 0;
+const shakeThreshold = 15;
+
+function handleShake(e) {
+    const currentTime = new Date().getTime();
+    if (currentTime - lastUpdate > 100) {
+        const diffTime = currentTime - lastUpdate;
+        lastUpdate = currentTime;
+        
+        const x = e.accelerationIncludingGravity.x;
+        const y = e.accelerationIncludingGravity.y;
+        const z = e.accelerationIncludingGravity.z;
+        
+        const speed = Math.abs(x + y + z - lastX - lastY - lastZ) / diffTime * 10000;
+        
+        if (speed > shakeThreshold) {
+            clearBoard();
+        }
+        
+        lastX = x;
+        lastY = y;
+        lastZ = z;
+    }
+}
+
+function clearBoard() {
+    const cells = document.querySelectorAll('.cell');
+    cells.forEach(cell => cell.style.backgroundColor = '');
+    currentX = Math.floor(gridSize / 2);
+    currentY = Math.floor(gridSize / 2);
+    draw();
+}
+const resetButton = document.getElementById('resetButton');
+
+resetButton.addEventListener('click', () => {
+  clearBoard();
+});
+    </script>
+</body>
+</html>
